@@ -1,0 +1,200 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <script src="https://unpkg.com/vue@next"></script>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <link rel="stylesheet" href="./css/app.css">
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-plus"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <title>Element Plus demo</title>
+    <style scoped>
+        body {
+          margin: 10;
+          padding: 10;
+          background-color: #17a2b8;
+          height: 100vh;
+        }
+      
+        .grupa {
+          width: 200px;
+        }
+      
+        #unos {
+          margin: auto;
+          width: 50%;
+          padding: 10px;
+          
+        }
+        #unos .container #unos-row #unos-column #unos-box {
+          margin: auto;
+          width: 55%;
+          margin-top: 10px;
+          max-width: 800px;
+          height: 1050px;
+          border: 1px solid #9C9C9C;
+          background-color: #EAEAEA;
+          font-weight: bold;
+        }
+      
+        #unos .container #unos-row #unos-column #unos-box #unos-form {
+          padding: 20px;
+        }
+      
+        #unos-link {
+          font-weight: normal;
+          font-style: italic;
+        }
+      </style>
+  </head>
+  <body>
+    <div id="app">
+        <div id="unos">
+            <h2 class="text-center text-white pt-5">{{naslov}}</h2>
+            <div class="container">
+              <div id="unos-row" class="row justify-content-center align-items-center">
+                <div id="unos-column" class="col-md-6">
+                  <div id="unos-box" class="col-md-12">
+                    <el-form ref="korisnik" :model="korisnik" :rules="rules" label-width="140px">
+                      <h3 class="text-center text-info">{{naslovForme}}</h3>
+                      <el-form-item label="Korisničko ime:" prop="korisnickoIme">
+                        <div class="grupa">
+                        <el-input v-model="korisnik.korisnickoIme"></el-input>
+                        </div>
+                      </el-form-item>
+                      <el-form-item label="Šifra" prop="sifra">
+                        <div class="grupa">
+                        <el-input type="password" v-model="korisnik.sifra"></el-input>
+                        </div>
+                      </el-form-item>
+                      <el-form-item label="Ime:" prop="ime">
+                        <div class="grupa">
+                        <el-input v-model="korisnik.ime"></el-input>
+                        </div>
+                      </el-form-item>
+                      <el-form-item label="Prezime:" prop="prezime">
+                        <div class="grupa">
+                        <el-input v-model="korisnik.prezime" autocomplete="off"></el-input>
+                        </div>
+                      </el-form-item>
+                      <el-form-item label="Datum:" prop="rodjendan">
+                        <div class="grupa">
+                        <el-date-picker type="date" placeholder="Datum rodjenja" v-model="korisnik.rodjendan" style="width: 100%;"></el-date-picker>
+                        </div>
+                      </el-form-item>
+                      <el-form-item>
+                        <el-button type="primary" @click="onSubmit('korisnik')">Formiraj</el-button>
+                        <el-button @click="resetForm('korisnik')">Obriši</el-button>
+                      </el-form-item>
+                      
+                    </el-form>
+                    <div id="unos-link" class="text-right">
+                      <a href="/ap/prijava">Prijava!</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+    <script>
+      const App = {
+       
+
+        data() {
+            var validatePass = (rule, value, callback) => {
+            if (value === '') {
+            callback(new Error('Unesite sifru!'));
+            } else {
+            if (this.korisnik.potvrdaSifre !== '') {
+                this.$refs.korisnik.validateField('checkPass');
+            }
+            callback();
+            }
+        };
+
+        return {
+            naslov: 'Unos Korisnika',
+            naslovForme: 'Unos Korisnika',
+            korisnik: {
+            korisnickoIme: '',
+            sifra: '',
+            ime: '',
+            prezime: '',
+            rodjendan: '',
+            uloga: 'kupac',
+            },
+        
+         rules: {
+          korisnickoIme: [
+            { required: true, message: 'Unesite korisnicko ime!', trigger: 'blur' },
+          ],
+          sifra: [
+            { required: true, validator: validatePass,  trigger: 'blur' }
+          ],
+          ime: [
+            { required: true, message: 'Unesite ime!', trigger: 'blur' }
+          ],
+          prezime: [
+            { required: true, message: 'Unesite prezime!', trigger: 'blur' }
+          ],
+          rodjendan: [
+            { required: true, message: 'Unesite datum rodjenja!', trigger: 'blur' },
+            { type: 'date', message: 'Mora biti datum' }
+          ],
+          
+        }
+      }; 
+    },
+
+    methods: {
+      open1() {
+        this.$message({
+          showClose: true,
+          message: 'Uspešno ste se registrovali',
+          type: 'success'
+        });
+      },
+
+      onSubmit(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            var k = {username: this.korisnik.korisnickoIme, password: this.korisnik.sifra, 
+            ime: this.korisnik.ime, prezime: this.korisnik.prezime, datumRodjenja:moment(String(this.korisnik.rodjendan)).format('YYYY-MM-DD'),
+             };
+            axios.post('rest/korisnici/dodajKupca', k)
+            .then(response => {
+              if (response.data){
+                this.open1();
+                window.location.href = '/'
+              } else {
+                this.$message({
+                showClose: true,
+                message: 'To korisnicko ime je zauzeto',
+                type: 'error'
+                });
+              }
+
+            
+             
+
+            });
+          }
+        });
+        
+      },
+      resetForm(formName){
+        this.$refs[formName].resetFields();
+      },
+    }
+
+      };
+      const app = Vue.createApp(App);
+      app.use(ElementPlus);
+      app.mount("#app");
+    </script>
+  </body>
+</html>

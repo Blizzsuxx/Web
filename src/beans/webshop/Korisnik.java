@@ -1,6 +1,7 @@
 package beans.webshop;
 
-import java.time.LocalDate;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Objects;
 /** Reprezentuje jedan proizvod. Cuva se id, naziv i jedinicna cena. */
 public class Korisnik {
@@ -9,7 +10,7 @@ public class Korisnik {
 	private String password;
 	private String ime;
 	private String prezime;
-	private LocalDate datumRodjenja;
+	private Date datumRodjenja;
     private Uloga uloga;
     
 	private Pol pol;
@@ -21,8 +22,20 @@ public class Korisnik {
 	}
 	
 	
+    public Korisnik(KorisnikInfo info){
+        try {
+            this.datumRodjenja = Manager.format.parse(info.datumRodjenja);
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        this.ime = info.ime;
+        this.prezime = info.prezime;
+        this.username = info.username;
+        this.password = info.password;
+    }
 
-    public Korisnik(String username, String password, String ime, String prezime, Pol pol, LocalDate datumRodjenja, Uloga uloga) {
+    public Korisnik(String username, String password, String ime, String prezime, Pol pol, Date datumRodjenja, Uloga uloga) {
         this.username = username;
         this.password = password;
         this.ime = ime;
@@ -72,11 +85,11 @@ public class Korisnik {
         this.pol = pol;
     }
 
-    public LocalDate getDatumRodjenja() {
+    public Date getDatumRodjenja() {
         return this.datumRodjenja;
     }
 
-    public void setDatumRodjenja(LocalDate datumRodjenja) {
+    public void setDatumRodjenja(Date datumRodjenja) {
         this.datumRodjenja = datumRodjenja;
     }
 
@@ -115,7 +128,7 @@ public class Korisnik {
         return this;
     }
 
-    public Korisnik datumRodjenja(LocalDate datumRodjenja) {
+    public Korisnik datumRodjenja(Date datumRodjenja) {
         setDatumRodjenja(datumRodjenja);
         return this;
     }

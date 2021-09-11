@@ -1,7 +1,7 @@
 package beans.webshop;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 public class Kupac extends Korisnik {
@@ -25,8 +25,12 @@ public class Kupac extends Korisnik {
         this.karte = new ArrayList<>();
     }
 
+    public Kupac(KorisnikInfo k){
+        super(k);
+    }
 
-    public Kupac(String username, String password, String ime, String prezime, Pol pol, LocalDate datumRodjenja, Uloga uloga, int brojBodova, ArrayList<Karta> karte, TipKupca tip) {
+
+    public Kupac(String username, String password, String ime, String prezime, Pol pol, Date datumRodjenja, Uloga uloga, int brojBodova, ArrayList<Karta> karte, TipKupca tip) {
         super(username, password, ime, prezime, pol, datumRodjenja, uloga);
         this.brojBodova = brojBodova;
         this.karte = karte;
@@ -34,7 +38,7 @@ public class Kupac extends Korisnik {
     }
 
 
-    public Kupac(String username, String password, String ime, String prezime, Pol pol, LocalDate datumRodjenja, Uloga uloga, int brojBodova) {
+    public Kupac(String username, String password, String ime, String prezime, Pol pol, Date datumRodjenja, Uloga uloga, int brojBodova) {
         super(username, password, ime, prezime, pol, datumRodjenja, uloga);
         this.brojBodova = brojBodova;
         this.karte = new ArrayList<>();

@@ -5,8 +5,57 @@ import java.util.Objects;
 public class KorisnikInfo {
     public String username;
     public String password;
+    public String ime;
+    public String prezime;
+    public String datumRodjenja;
 
 
+    public KorisnikInfo(String username, String password, String ime, String prezime, String datumRodjenja) {
+        this.username = username;
+        this.password = password;
+        this.ime = ime;
+        this.prezime = prezime;
+        this.datumRodjenja = datumRodjenja;
+    }
+
+    public String getIme() {
+        return this.ime;
+    }
+
+    public void setIme(String ime) {
+        this.ime = ime;
+    }
+
+    public String getPrezime() {
+        return this.prezime;
+    }
+
+    public void setPrezime(String prezime) {
+        this.prezime = prezime;
+    }
+
+    public String getDatumRodjenja() {
+        return this.datumRodjenja;
+    }
+
+    public void setDatumRodjenja(String datumRodjenja) {
+        this.datumRodjenja = datumRodjenja;
+    }
+
+    public KorisnikInfo ime(String ime) {
+        setIme(ime);
+        return this;
+    }
+
+    public KorisnikInfo prezime(String prezime) {
+        setPrezime(prezime);
+        return this;
+    }
+
+    public KorisnikInfo datumRodjenja(String datumRodjenja) {
+        setDatumRodjenja(datumRodjenja);
+        return this;
+    }
 
     public KorisnikInfo() {
     }

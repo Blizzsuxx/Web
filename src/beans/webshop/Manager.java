@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.StringTokenizer;
@@ -15,6 +15,7 @@ public class Manager {
     private ArrayList<Manifestacija> manifestacije;
     private ArrayList<Karta> karte;
     private ArrayList<Komentar> komentari;
+    public static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     
 
     public Korisnik login(KorisnikInfo info){
@@ -26,6 +27,25 @@ public class Manager {
         return null;
     }
 
+
+    public Korisnik findKorisnik(String username){
+        if(username == null || username.equals("")){
+            return null;
+        }
+        for (Korisnik k : kupci){
+            if (k.getUsername().equals(username)){
+                return k;
+            }
+        }
+
+        for (Korisnik k : prodavci){
+            if (k.getUsername().equals(username)){
+                return k;
+            }
+        }
+
+        return null;
+    }
 
     private void loadKupci() throws IOException{
 
@@ -52,7 +72,7 @@ public class Manager {
 					karte = st.nextToken().trim();
 					tipKupca = st.nextToken().trim();
 				}
-				Kupac kupac = new Kupac(username, password, ime, prezime, Pol.valueOf(pol), LocalDate.parse(datum), Uloga.valueOf(uloga), Integer.parseInt(brojBodova), null, null);
+				Kupac kupac = new Kupac(username, password, ime, prezime, Pol.valueOf(pol), format.parse(datum), Uloga.valueOf(uloga), Integer.parseInt(brojBodova), null, null);
 				kupci.add(kupac);
 			}
 		} catch (Exception ex) {
@@ -78,6 +98,7 @@ public class Manager {
             e.printStackTrace();
         }
 
+        prodavci = new ArrayList<>();
 
 
     }

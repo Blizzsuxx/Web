@@ -6,8 +6,6 @@ import static spark.Spark.post;
 import static spark.Spark.staticFiles;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.util.ArrayList;
 
 import com.google.gson.Gson;
 
@@ -77,6 +75,22 @@ public class SparkWebShopMain {
 				ss.attribute("korisnik", korisnik); 
 			}
 			return g.toJson(korisnik);
+		});
+
+
+		post("/rest/korisnici/dodajKupca", (req, res) -> {
+			res.type("application/json");
+			String payload = req.body();
+			KorisnikInfo pd = g.fromJson(payload, KorisnikInfo.class);
+
+			Korisnik korisnik = podaci.findKorisnik(pd.getUsername());
+			if (korisnik != null){
+				return false;
+			}
+			Kupac kupac = new Kupac(pd);
+			podaci.getKupci().add(kupac);
+			System.out.println(pd);
+			return true;
 		});
 	}
 	
