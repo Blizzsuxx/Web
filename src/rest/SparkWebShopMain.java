@@ -32,15 +32,8 @@ public class SparkWebShopMain {
 		port(8080);
 		
 		staticFiles.externalLocation(new File("./static").getCanonicalPath()); 
-		Kupac kupac = new Kupac();
-		kupac.setUsername("kupac");
-		kupac.setPassword("sifra123");
-		kupac.setIme("Milos");
-		kupac.setPrezime("Obilic");
-		ArrayList<Kupac> kupci = new ArrayList<>();
-		kupci.add(kupac);
-		g.toJson(kupci, new FileWriter("./kupci.json"));
 
+		podaci.load();
 		get("/test", (req, res) -> {
 			return "Works";
 		});

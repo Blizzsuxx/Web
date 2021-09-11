@@ -1,6 +1,6 @@
 package beans.webshop;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 /** Reprezentuje jedan proizvod. Cuva se id, naziv i jedinicna cena. */
 public class Korisnik {
@@ -9,22 +9,20 @@ public class Korisnik {
 	private String password;
 	private String ime;
 	private String prezime;
-	private Date datumRodjenja;
+	private LocalDate datumRodjenja;
     private Uloga uloga;
     
 	private Pol pol;
 
 
 	/** Koristi se samo za AngularJS */
-	private int count;
 
 	public Korisnik() {
-		this.count = 1;
 	}
 	
 	
 
-    public Korisnik(String username, String password, String ime, String prezime, Pol pol, Date datumRodjenja, Uloga uloga, int count) {
+    public Korisnik(String username, String password, String ime, String prezime, Pol pol, LocalDate datumRodjenja, Uloga uloga) {
         this.username = username;
         this.password = password;
         this.ime = ime;
@@ -32,7 +30,6 @@ public class Korisnik {
         this.pol = pol;
         this.datumRodjenja = datumRodjenja;
         this.uloga = uloga;
-        this.count = count;
     }
 
     public String getUsername() {
@@ -75,11 +72,11 @@ public class Korisnik {
         this.pol = pol;
     }
 
-    public Date getDatumRodjenja() {
+    public LocalDate getDatumRodjenja() {
         return this.datumRodjenja;
     }
 
-    public void setDatumRodjenja(Date datumRodjenja) {
+    public void setDatumRodjenja(LocalDate datumRodjenja) {
         this.datumRodjenja = datumRodjenja;
     }
 
@@ -91,13 +88,7 @@ public class Korisnik {
         this.uloga = uloga;
     }
 
-    public int getCount() {
-        return this.count;
-    }
 
-    public void setCount(int count) {
-        this.count = count;
-    }
 
     public Korisnik username(String username) {
         setUsername(username);
@@ -124,7 +115,7 @@ public class Korisnik {
         return this;
     }
 
-    public Korisnik datumRodjenja(Date datumRodjenja) {
+    public Korisnik datumRodjenja(LocalDate datumRodjenja) {
         setDatumRodjenja(datumRodjenja);
         return this;
     }
@@ -134,10 +125,7 @@ public class Korisnik {
         return this;
     }
 
-    public Korisnik count(int count) {
-        setCount(count);
-        return this;
-    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -147,12 +135,12 @@ public class Korisnik {
             return false;
         }
         Korisnik korisnik = (Korisnik) o;
-        return Objects.equals(username, korisnik.username) && Objects.equals(password, korisnik.password) && Objects.equals(ime, korisnik.ime) && Objects.equals(prezime, korisnik.prezime) && Objects.equals(pol, korisnik.pol) && Objects.equals(datumRodjenja, korisnik.datumRodjenja) && Objects.equals(uloga, korisnik.uloga) && count == korisnik.count;
+        return Objects.equals(username, korisnik.username) && Objects.equals(password, korisnik.password) && Objects.equals(ime, korisnik.ime) && Objects.equals(prezime, korisnik.prezime) && Objects.equals(pol, korisnik.pol) && Objects.equals(datumRodjenja, korisnik.datumRodjenja) && Objects.equals(uloga, korisnik.uloga);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, password, ime, prezime, pol, datumRodjenja, uloga, count);
+        return Objects.hash(username, password, ime, prezime, pol, datumRodjenja, uloga);
     }
 	
 
@@ -167,7 +155,6 @@ public class Korisnik {
             ", pol='" + getPol() + "'" +
             ", datumRodjenja='" + getDatumRodjenja() + "'" +
             ", uloga='" + getUloga() + "'" +
-            ", count='" + getCount() + "'" +
             "}";
     }
 

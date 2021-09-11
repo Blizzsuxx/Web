@@ -5,13 +5,52 @@
     <script src="https://unpkg.com/vue@next"></script>
     <!-- import CSS -->
     <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <link rel="stylesheet" href="./css/app.css">
     <!-- import JavaScript -->
     <script src="https://unpkg.com/element-plus"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <title>Element Plus demo</title>
+    <style scoped>
+      body {
+        margin: 10;
+        padding: 10;
+        background-color: #17a2b8;
+        height: 100vh;
+      }
+    
+      .grupa {
+        width: 200px;
+      }
+    
+      #unos {
+        margin: auto;
+        width: 50%;
+        padding: 10px;
+        
+      }
+      #unos .container #unos-row #unos-column #unos-box {
+        margin: auto;
+        width: 50%;
+        margin-top: 10px;
+        max-width: 750px;
+        height: 300px;
+        border: 1px solid #9C9C9C;
+        background-color: #EAEAEA;
+        font-weight: bold;
+      }
+    
+      #unos .container #unos-row #unos-column #unos-box #unos-form {
+        padding: 20px;
+      }
+    
+      #unos-link {
+        font-weight: normal;
+        font-style: italic;
+      }
+    </style>
   </head>
   <body>
     <div id="app">
-      <template>
         <div id="unos">
           <h2 class="text-center text-white pt-5">{{naslov}}</h2>
           <div class="container">
@@ -44,7 +83,6 @@
             </div>
           </div>
         </div>
-      </template>
     </div>
     <script>
       const App = {

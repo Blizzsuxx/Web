@@ -1,14 +1,13 @@
 package beans.webshop;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.ProcessBuilder.Redirect.Type;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
-
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
+import java.util.StringTokenizer;
 
 public class Manager {
     private ArrayList<Kupac> kupci;
@@ -28,91 +27,57 @@ public class Manager {
     }
 
 
+    private void loadKupci() throws IOException{
+
+
+
+        BufferedReader in = new BufferedReader(new FileReader("./kupci.txt"));
+        String line, username = "", password = "", ime = "", prezime = "", datum = "", uloga = "", pol = "", brojBodova = "", karte = "", tipKupca = "";
+		StringTokenizer st;
+		try {
+			while ((line = in.readLine()) != null) {
+				line = line.trim();
+				if (line.equals("") || line.indexOf('#') == 0)
+					continue;
+				st = new StringTokenizer(line, ";");
+				while (st.hasMoreTokens()) {
+					username = st.nextToken().trim();
+					password = st.nextToken().trim();
+					ime = st.nextToken().trim();
+					prezime = st.nextToken().trim();
+					pol = st.nextToken().trim();
+					datum = st.nextToken().trim();
+					uloga = st.nextToken().trim();
+					brojBodova = st.nextToken().trim();
+					karte = st.nextToken().trim();
+					tipKupca = st.nextToken().trim();
+				}
+				Kupac kupac = new Kupac(username, password, ime, prezime, Pol.valueOf(pol), LocalDate.parse(datum), Uloga.valueOf(uloga), Integer.parseInt(brojBodova), null, null);
+				kupci.add(kupac);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+        in.close();
+
+
+
+
+    }
+
     public void load(){
         
-        Gson gson = new Gson();
-        JsonReader reader = null;
         try {
-            reader = new JsonReader(new FileReader("./kupci.json"));
+            loadKupci();
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        kupci = gson.fromJson(reader, kupci.getClass());
-        try {
-            reader.close();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-
-
-
-
-        try {
-            reader = new JsonReader(new FileReader("./karte.json"));
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        karte = gson.fromJson(reader, karte.getClass());
-        try {
-            reader.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-
-
-        try {
-            reader = new JsonReader(new FileReader("./komentari.json"));
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        komentari = gson.fromJson(reader, komentari.getClass());
-        try {
-            reader.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-
-
-
-        try {
-            reader = new JsonReader(new FileReader("./manifestacije.json"));
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        manifestacije = gson.fromJson(reader, manifestacije.getClass());
-        try {
-            reader.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-
-
-
-        try {
-            reader = new JsonReader(new FileReader("./prodavci.json"));
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        prodavci = gson.fromJson(reader, prodavci.getClass());
-        try {
-            reader.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
 
 
     }
