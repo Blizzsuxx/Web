@@ -11,15 +11,109 @@
   </head>
   <body>
     <div id="app">
-      <el-button>{{ message }}</el-button>
+      <template>
+        <div id="unos">
+          <h2 class="text-center text-white pt-5">{{naslov}}</h2>
+          <div class="container">
+            <div id="unos-row" class="row justify-content-center align-items-center">
+              <div id="unos-column" class="col-md-6">
+                <div id="unos-box" class="col-md-12">
+                  <el-form ref="korisnik" :model="korisnik" :rules="rules" label-width="140px">
+                    <h3 class="text-center text-info">{{naslovForme}}</h3>
+                    <el-form-item label="Korisnicko ime:" prop="korisnickoIme">
+                      <div class="grupa">
+                      <el-input v-model="korisnik.korisnickoIme"></el-input>
+                      </div>
+                    </el-form-item>
+                    <el-form-item label="Sifra" prop="sifra">
+                      <div class="grupa">
+                      <el-input type="password" v-model="korisnik.sifra"></el-input>
+                      </div>
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button type="primary" @click="onSubmit('korisnik')">Prijava</el-button>
+                      <el-button @click="resetForm('korisnik')">Obriši</el-button>
+                    </el-form-item>
+                    
+                  </el-form>
+                  <div id="unos-link" class="text-right">
+                    <a href="/ap/FormaKorisnika">Registruj se!</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
     <script>
       const App = {
-        data() {
-          return {
-            message: "Hello Element Plus",
-          };
+        data() {    
+      return {
+        naslov: 'Prijava',
+        naslovForme: 'Prijava',
+        korisnik: {
+          korisnickoIme: '',
+          sifra: '',
         },
+        rules: {
+          korisnickoIme: [
+            { required: true, message: 'Unesite korisnicko ime!', trigger: 'blur' }
+          ],
+          sifra: [
+            { required: true, message: 'Unesite lozinku!', trigger: 'blur' }
+          ],
+          
+        }
+      };
+    },
+    methods: {
+      open1() {
+        this.$message({
+          showClose: true,
+          message: 'Nevalidni kredecijali!',
+          type: 'error'
+        });
+      },
+      open2() {
+        this.$message({
+          showClose: true,
+          message: 'Profil nije potvrđen preko email-a.!',
+          type: 'error'
+        });
+      },
+
+      onSubmit(formName) {
+        var s = {username: this.korisnik.korisnickoIme, password: this.korisnik.sifra }
+        axios
+			.post('rest/korisnici/prijava', s).then(
+            response => {
+              if(!response.data){
+                console.debug("ne")
+              } else {
+                console.debug("yey")
+              }
+              return 
+            },
+            error => {
+              if (error.response.status == 401){
+                this.open1();
+                this.resetForm(formName);
+              } else {
+                this.message =
+                (error.response && error.response.data) ||
+                error.message ||
+                error.toString();
+              }
+                
+            }
+        );
+
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      }
+    }
       };
       const app = Vue.createApp(App);
       app.use(ElementPlus);

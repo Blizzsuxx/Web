@@ -6,9 +6,15 @@ import static spark.Spark.post;
 import static spark.Spark.staticFiles;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.util.ArrayList;
 
 import com.google.gson.Gson;
 
+import beans.webshop.Korisnik;
+import beans.webshop.KorisnikInfo;
+import beans.webshop.Kupac;
+import beans.webshop.Manager;
 import beans.webshop.ProductToAdd;
 import beans.webshop.Products;
 import beans.webshop.ShoppingCart;
@@ -19,13 +25,22 @@ public class SparkWebShopMain {
 
 	private static Products products = new Products();
 	private static Gson g = new Gson();
+	private static Manager podaci = new Manager();
 
 
 	public static void main(String[] args) throws Exception {
 		port(8080);
 		
 		staticFiles.externalLocation(new File("./static").getCanonicalPath()); 
-		
+		Kupac kupac = new Kupac();
+		kupac.setUsername("kupac");
+		kupac.setPassword("sifra123");
+		kupac.setIme("Milos");
+		kupac.setPrezime("Obilic");
+		ArrayList<Kupac> kupci = new ArrayList<>();
+		kupci.add(kupac);
+		g.toJson(kupci, new FileWriter("./kupci.json"));
+
 		get("/test", (req, res) -> {
 			return "Works";
 		});
@@ -58,6 +73,18 @@ public class SparkWebShopMain {
 			getSc(req).getItems().clear();
 			return "OK";
 		});
+
+		post("/rest/korisnici/prijava", (req, res) -> {
+			res.type("application/json");
+			String payload = req.body();
+			KorisnikInfo pd = g.fromJson(payload, KorisnikInfo.class);
+			Korisnik korisnik = podaci.login(pd);
+			if (korisnik != null){
+				Session ss = req.session(true);
+				ss.attribute("korisnik", korisnik); 
+			}
+			return g.toJson(korisnik);
+		});
 	}
 	
 	private static ShoppingCart getSc(Request req) {
@@ -70,4 +97,13 @@ public class SparkWebShopMain {
 		return sc;
 	}
 
+
+	private static Korisnik getKorisnik(Request req) {
+		Session ss = req.session(true);
+		Korisnik sc = ss.attribute("korisnik"); 
+		if (sc == null) {
+			return null;
+		}
+		return sc;
+	}
 }
