@@ -33,6 +33,8 @@ public class Korisnik {
         this.prezime = info.prezime;
         this.username = info.username;
         this.password = info.password;
+        this.uloga = Uloga.valueOf(info.uloga);
+        this.pol = Pol.valueOf(info.pol);
     }
 
     public Korisnik(String username, String password, String ime, String prezime, Pol pol, Date datumRodjenja, Uloga uloga) {

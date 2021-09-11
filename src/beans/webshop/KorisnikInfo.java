@@ -8,7 +8,45 @@ public class KorisnikInfo {
     public String ime;
     public String prezime;
     public String datumRodjenja;
+    public String uloga;
+    public String pol;
 
+
+    public KorisnikInfo(String username, String password, String ime, String prezime, String datumRodjenja, String uloga, String pol) {
+        this.username = username;
+        this.password = password;
+        this.ime = ime;
+        this.prezime = prezime;
+        this.datumRodjenja = datumRodjenja;
+        this.uloga = uloga;
+        this.pol = pol;
+    }
+
+    public String getUloga() {
+        return this.uloga;
+    }
+
+    public void setUloga(String uloga) {
+        this.uloga = uloga;
+    }
+
+    public String getPol() {
+        return this.pol;
+    }
+
+    public void setPol(String pol) {
+        this.pol = pol;
+    }
+
+    public KorisnikInfo uloga(String uloga) {
+        setUloga(uloga);
+        return this;
+    }
+
+    public KorisnikInfo pol(String pol) {
+        setPol(pol);
+        return this;
+    }
 
     public KorisnikInfo(String username, String password, String ime, String prezime, String datumRodjenja) {
         this.username = username;

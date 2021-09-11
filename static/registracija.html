@@ -89,10 +89,15 @@
                         <el-button type="primary" @click="onSubmit('korisnik')">Formiraj</el-button>
                         <el-button @click="resetForm('korisnik')">Obriši</el-button>
                       </el-form-item>
-                      
+                      <el-form-item label="Pol:" prop="pol">
+                        <div>
+                          <el-radio v-model="korisnik.pol" label="MUSKI">MUSKI</el-radio>
+                          <el-radio v-model="korisnik.pol" label="ZENSKI">ZENSKI</el-radio>
+                          </div>
+                      </el-form-item>
                     </el-form>
                     <div id="unos-link" class="text-right">
-                      <a href="/ap/prijava">Prijava!</a>
+                      <a href="/">Prijava!</a>
                     </div>
                   </div>
                 </div>
@@ -126,6 +131,7 @@
             prezime: '',
             rodjendan: '',
             uloga: 'kupac',
+            pol: 'MUSKI',
             },
         
          rules: {
@@ -150,6 +156,8 @@
       }; 
     },
 
+
+
     methods: {
       open1() {
         this.$message({
@@ -164,6 +172,7 @@
           if (valid) {
             var k = {username: this.korisnik.korisnickoIme, password: this.korisnik.sifra, 
             ime: this.korisnik.ime, prezime: this.korisnik.prezime, datumRodjenja:moment(String(this.korisnik.rodjendan)).format('YYYY-MM-DD'),
+            uloga: "KUPAC", pol : this.korisnik.pol,
              };
             axios.post('rest/korisnici/dodajKupca', k)
             .then(response => {
