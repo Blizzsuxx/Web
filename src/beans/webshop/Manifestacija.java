@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Manifestacija {
+    private long id;
     private String naziv;
     private String tip;
     private LocalDateTime datumVreme;
@@ -15,6 +16,33 @@ public class Manifestacija {
 
     public Manifestacija() {
     }
+
+
+    public Manifestacija(long id, String naziv, String tip, LocalDateTime datumVreme, double cena, boolean status, String slika, Lokacija lokacija) {
+        this.id = id;
+        this.naziv = naziv;
+        this.tip = tip;
+        this.datumVreme = datumVreme;
+        this.cena = cena;
+        this.status = status;
+        this.slika = slika;
+        this.lokacija = lokacija;
+    }
+
+    public long getId() {
+        return this.id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Manifestacija id(long id) {
+        setId(id);
+        return this;
+    }
+
+
 
     public Manifestacija(String naziv, String tip, LocalDateTime datumVreme, double cena, boolean status, String slika, Lokacija lokacija) {
         this.naziv = naziv;

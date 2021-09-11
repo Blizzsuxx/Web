@@ -1,6 +1,7 @@
 package beans.webshop;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 public class Prodavac extends Korisnik {
@@ -15,6 +16,13 @@ public class Prodavac extends Korisnik {
     public Prodavac(ArrayList<Manifestacija> manifestacije) {
         this.manifestacije = manifestacije;
     }
+
+
+    public Prodavac(String username, String password, String ime, String prezime, Pol pol, Date datumRodjenja, Uloga uloga, ArrayList<Manifestacija> manifestacije) {
+        super(username, password, ime, prezime, pol, datumRodjenja, uloga);
+        this.manifestacije = manifestacije;
+    }
+
 
     public ArrayList<Manifestacija> getManifestacije() {
         return this.manifestacije;

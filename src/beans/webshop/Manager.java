@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.StringTokenizer;
@@ -86,6 +87,165 @@ public class Manager {
 
     }
 
+
+
+
+
+
+    private void loadProdavci() throws IOException{
+
+
+
+        BufferedReader in = new BufferedReader(new FileReader("./prodavci.txt"));
+        String line, username = "", password = "", ime = "", prezime = "", datum = "", uloga = "", pol = "", manifestacije = "";
+		StringTokenizer st;
+		try {
+			while ((line = in.readLine()) != null) {
+				line = line.trim();
+				if (line.equals("") || line.indexOf('#') == 0)
+					continue;
+				st = new StringTokenizer(line, ";");
+				while (st.hasMoreTokens()) {
+					username = st.nextToken().trim();
+					password = st.nextToken().trim();
+					ime = st.nextToken().trim();
+					prezime = st.nextToken().trim();
+					pol = st.nextToken().trim();
+					datum = st.nextToken().trim();
+					uloga = st.nextToken().trim();
+					manifestacije = st.nextToken().trim();
+				}
+				Prodavac prodavac = new Prodavac(username, password, ime, prezime, Pol.valueOf(pol), format.parse(datum), Uloga.valueOf(uloga), null);
+				prodavci.add(prodavac);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+        in.close();
+
+
+
+
+    }
+
+
+
+    private void loadKomentari() throws IOException{
+
+
+
+        BufferedReader in = new BufferedReader(new FileReader("./komentari.txt"));
+        String line, username = "", manifestacija = "", tekst = "", ocena = "";
+		StringTokenizer st;
+		try {
+			while ((line = in.readLine()) != null) {
+				line = line.trim();
+				if (line.equals("") || line.indexOf('#') == 0)
+					continue;
+				st = new StringTokenizer(line, ";");
+				while (st.hasMoreTokens()) {
+					username = st.nextToken().trim();
+					manifestacija = st.nextToken().trim();
+					tekst = st.nextToken().trim();
+					ocena = st.nextToken().trim();
+				}
+				Komentar komentar = new Komentar(null, null, tekst, Integer.parseInt(ocena));
+				komentari.add(komentar);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+        in.close();
+
+
+
+
+    }
+
+
+
+
+    private void loadKarte() throws IOException{
+
+
+
+        BufferedReader in = new BufferedReader(new FileReader("./karte.txt"));
+        String line, id = "", manifestacija = "", datumVreme = "", cena = "", kupacIme = "", kupacPrezime = "", status = "", tip = "";
+		StringTokenizer st;
+		try {
+			while ((line = in.readLine()) != null) {
+				line = line.trim();
+				if (line.equals("") || line.indexOf('#') == 0)
+					continue;
+				st = new StringTokenizer(line, ";");
+				while (st.hasMoreTokens()) {
+					id = st.nextToken().trim();
+					manifestacija = st.nextToken().trim();
+					datumVreme = st.nextToken().trim();
+					cena = st.nextToken().trim();
+					kupacIme = st.nextToken().trim();
+					kupacPrezime = st.nextToken().trim();
+					status = st.nextToken().trim();
+					tip = st.nextToken().trim();
+				}
+				Karta karta = new Karta(Long.parseLong(id), null, LocalDateTime.parse(datumVreme), Double.parseDouble(cena), kupacIme, kupacPrezime, Boolean.parseBoolean(status), TipKarte.valueOf(tip));
+				karte.add(karta);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+        in.close();
+
+
+
+
+    }
+
+
+
+    private void loadManifestacije() throws IOException{
+
+
+
+        BufferedReader in = new BufferedReader(new FileReader("./manifestacije.txt"));
+        String line, id = "", naziv = "", tip = "", datumVreme = "", cena = "", status = "", slika = "", lokacija = "";
+		StringTokenizer st;
+		try {
+			while ((line = in.readLine()) != null) {
+				line = line.trim();
+				if (line.equals("") || line.indexOf('#') == 0)
+					continue;
+				st = new StringTokenizer(line, ";");
+				while (st.hasMoreTokens()) {
+					id = st.nextToken().trim();
+					naziv = st.nextToken().trim();
+					tip = st.nextToken().trim();
+					datumVreme = st.nextToken().trim();
+					cena = st.nextToken().trim();
+					status = st.nextToken().trim();
+					slika = st.nextToken().trim();
+					lokacija = st.nextToken().trim();
+				}
+				Manifestacija manifestacija = new Manifestacija(Long.parseLong(id), naziv, tip, LocalDateTime.parse(datumVreme), Double.parseDouble(cena), Boolean.parseBoolean(status), slika, null);
+				manifestacije.add(manifestacija);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+        in.close();
+
+
+
+
+    }
+
+
+
+
     public void load(){
         
         try {
@@ -98,8 +258,34 @@ public class Manager {
             e.printStackTrace();
         }
 
-        prodavci = new ArrayList<>();
+        try {
+            loadProdavci();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
+        try {
+            loadKarte();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+        try {
+            loadKomentari();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            loadManifestacije();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 

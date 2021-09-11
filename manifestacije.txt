@@ -1,0 +1,1 @@
+1;baba;zurka;1989-01-12-11-22-33;1200.00;true;12.00;14.00;baba.jpg;Baba Jage 5, Novi Sad, 21000
