@@ -127,9 +127,14 @@
 			.post('rest/korisnici/prijava', s).then(
             response => {
               if(!response.data){
-                console.debug("ne")
+                this.$message({
+                showClose: true,
+                message: 'Pogresno korisnicko ime i/ili sifra',
+                type: 'error'
+                });
               } else {
                 console.debug("yey")
+                window.location.href = '/korisnickiProzor.html'
               }
               return 
             },

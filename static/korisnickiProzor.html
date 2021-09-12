@@ -1,0 +1,185 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <script src="https://unpkg.com/vue@next"></script>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <link rel="stylesheet" href="./css/app.css">
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-plus"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>Element Plus demo</title>
+    <style>
+        .el-header {
+          background-color: #B3C0D1;
+          color: #333;
+          line-height: 60px;
+        }
+      
+        .el-aside {
+          color: #333;
+        }
+      </style>
+  </head>
+  <body>
+    <div id="app">
+        <el-container style="height: 900px; border: 1px solid #eee">
+            <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+              <el-menu :default-openeds="['1', '2']">
+                <el-sub-menu index="1">
+                    <el-link href="/korisnickiProzor.html">
+                        <el-menu-item index="1-1">Home</el-menu-item>
+                    </el-link>
+                </el-sub-menu>
+                <el-sub-menu index="2">
+                  <template #title><i class="el-icon-setting"></i></template>
+                  <el-menu-item-group>
+                  <el-link href="/izmenaProfila">
+                    <el-menu-item index="2-1">Profil</el-menu-item>
+                  </el-link>
+                  <el-link href="/karte">
+                  <el-menu-item index="2-2">Karte</el-menu-item>
+                    </el-link>
+                  <el-link href="/">
+                  <el-menu-item index="2-3" href="/">Odjava</el-menu-item>
+                  </el-link>
+                </el-menu-item-group>
+                </el-submenu>
+        
+              </el-menu>
+            </el-aside>
+        
+            <el-container>
+              <el-header style="text-align: right; font-size: 12px">
+                <slot name="header-slot"></slot>
+                
+                <el-input placeholder="Pretrazi Po Apoteci" v-model="search" @keypress="pretraga()"></el-input>
+        
+              </el-header>
+        
+        
+              <el-main>
+                
+          
+        
+                <el-table :data="tableData">
+                  <el-table-column prop="naziv" label="Naziv" width="200">
+                  </el-table-column>
+                  <el-table-column prop="tip" label="Tip" width="200">
+                  </el-table-column>
+                  <el-table-column prop="cena" label="Cena" width="120">
+                  </el-table-column>
+              <el-table-column prop="ocena" label="Ocena" width="120">
+                  </el-table-column>
+                  <el-table-column prop="vremePrikaz" label="Vreme" width="240">
+                  </el-table-column>
+                </el-table-column>
+                <el-table-column prop="lokacijaPrikaz" label="Lokacija" width="240">
+                </el-table-column>
+                <el-table-column min-width="55"  prop="slika" label="Display Pic">
+                    <template #default="deo">
+                        <el-image
+                        style="width: 100px; height: 100px"
+                        :src="deo.row.slika"
+                        fit="contain"
+                        ></el-image>
+                    </template>
+                  </el-table-column>
+        
+                  <el-table-column
+                      align="right">
+                    <template #default="scope">
+                      <el-button
+                          size="mini"
+                          type="success"
+                          @click="handlePregled(scope.$index, scope.row)">Pregled</el-button>
+                    </template>
+                  </el-table-column>
+        
+        
+                </el-table>
+
+              </el-main>
+            </el-container>
+          </el-container>
+    </div>
+    <script>
+      const App = {
+        async created(){
+      //pozivanje ucitavanja podataka poseta
+      console.log("B");
+      axios.get("rest/manifestacije/dobaviManifestacije").then(response => {
+          this.tableData = response.data;
+          this.tableDataCopy = this.tableData;
+          return;
+      })
+    },
+
+    methods: {
+
+      pretraga(){
+        this.tableData = this.tableDataCopy.filter(data => !this.search || String(data.naziv).toLowerCase().includes(this.search.toLowerCase()))
+      },
+      
+
+    handlePregled(index, row) {
+      console.log(index, row);
+      
+      this.$confirm('Zelite da zapocnete pregled?', 'Warning', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: 'Pregled zapocet',
+          });
+
+          this.getPacijent(row);
+          console.log(row);
+          this.$router.push({ name: 'APPregled', params: {pacijentID: row.pacijent.username, pregledID: row.id} });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Prekid'
+          });
+        });
+    },
+
+    async getPacijent(row){
+
+      await this.$store.dispatch('APPacijenti/pacijentZaPrelged', row.pacijent);
+    },
+
+        promena(value){
+            let time = 7;
+            if(value === "Mesecno"){
+                time = 30;
+            }
+            if(value === "Godisnje"){
+                time = 365;
+            }
+            
+            this.tableData = this.$store.state.APPosete.svePosete.filter((item) => {
+              
+                return time >= ((new Date(Date.parse(item.kraj))).getTime() -  (new Date(Date.parse(item.pocetak))).getTime()) / (1000 * 3600 * 24)} );
+        }
+    },
+        data() {
+
+
+      return {
+        
+
+        search : '',
+        tableData : null,
+            }
+        }
+    };
+      const app = Vue.createApp(App);
+      app.use(ElementPlus);
+      app.mount("#app");
+    </script>
+  </body>
+</html>

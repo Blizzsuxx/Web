@@ -1,1 +1,1 @@
-1;1;1989-01-12-11-22-33;120.00;ime;prezime;true;REGULAR
+1;1;1989-01-12 11:22;120.00;ime;prezime;true;REGULAR

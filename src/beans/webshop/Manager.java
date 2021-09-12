@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.StringTokenizer;
@@ -17,6 +18,7 @@ public class Manager {
     private ArrayList<Karta> karte;
     private ArrayList<Komentar> komentari;
     public static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    public static DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     
 
     public Korisnik login(KorisnikInfo info){
@@ -190,7 +192,7 @@ public class Manager {
 					status = st.nextToken().trim();
 					tip = st.nextToken().trim();
 				}
-				Karta karta = new Karta(Long.parseLong(id), null, LocalDateTime.parse(datumVreme), Double.parseDouble(cena), kupacIme, kupacPrezime, Boolean.parseBoolean(status), TipKarte.valueOf(tip));
+				Karta karta = new Karta(Long.parseLong(id), null, LocalDateTime.parse(datumVreme, dateTimeFormat), Double.parseDouble(cena), kupacIme, kupacPrezime, Boolean.parseBoolean(status), TipKarte.valueOf(tip));
 				karte.add(karta);
 			}
 		} catch (Exception ex) {
@@ -211,7 +213,7 @@ public class Manager {
 
 
         BufferedReader in = new BufferedReader(new FileReader("./manifestacije.txt"));
-        String line, id = "", naziv = "", tip = "", datumVreme = "", cena = "", status = "", slika = "", lokacija = "";
+        String line, id = "", naziv = "", tip = "", datumVreme = "", cena = "", status = "", slika = "", lokacija = "", brojMesta = "";
 		StringTokenizer st;
 		try {
 			while ((line = in.readLine()) != null) {
@@ -228,8 +230,10 @@ public class Manager {
 					status = st.nextToken().trim();
 					slika = st.nextToken().trim();
 					lokacija = st.nextToken().trim();
+					brojMesta = st.nextToken().trim();
+
 				}
-				Manifestacija manifestacija = new Manifestacija(Long.parseLong(id), naziv, tip, LocalDateTime.parse(datumVreme), Double.parseDouble(cena), Boolean.parseBoolean(status), slika, null);
+				Manifestacija manifestacija = new Manifestacija(Long.parseLong(id), naziv, tip, LocalDateTime.parse(datumVreme, dateTimeFormat), Double.parseDouble(cena), Boolean.parseBoolean(status), slika, null, Long.parseLong(brojMesta));
 				manifestacije.add(manifestacija);
 			}
 		} catch (Exception ex) {

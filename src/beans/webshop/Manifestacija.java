@@ -12,6 +12,61 @@ public class Manifestacija {
     private boolean status;
     private String slika;
     private Lokacija lokacija;
+    private long brojMesta;
+
+    private int ocena;
+    private String lokacijaPrikaz;
+    private String vremePrikaz;
+
+
+
+    public int getOcena() {
+        return this.ocena;
+    }
+
+
+    public String getLokacijaPrikaz() {
+        return this.lokacijaPrikaz;
+    }
+
+
+
+    public String getVremePrikaz() {
+        return this.vremePrikaz;
+    }
+
+
+
+
+
+    public Manifestacija(long id, String naziv, String tip, LocalDateTime datumVreme, double cena, boolean status, String slika, Lokacija lokacija, long brojMesta) {
+        this.id = id;
+        this.naziv = naziv;
+        this.tip = tip;
+        this.datumVreme = datumVreme;
+        this.cena = cena;
+        this.status = status;
+        this.slika = slika;
+        this.lokacija = lokacija;
+        this.brojMesta = brojMesta;
+        if(lokacija != null){
+            this.lokacijaPrikaz = lokacija.getAdresa() + ": " + lokacija.getGeografskaDuzina() + "-" + lokacija.getGeografskaSirina();
+        }
+        this.vremePrikaz = this.datumVreme.format(Manager.dateTimeFormat);
+    }
+
+    public long getBrojMesta() {
+        return this.brojMesta;
+    }
+
+    public void setBrojMesta(long brojMesta) {
+        this.brojMesta = brojMesta;
+    }
+
+    public Manifestacija brojMesta(long brojMesta) {
+        setBrojMesta(brojMesta);
+        return this;
+    }
 
 
     public Manifestacija() {
@@ -27,6 +82,8 @@ public class Manifestacija {
         this.status = status;
         this.slika = slika;
         this.lokacija = lokacija;
+        this.lokacijaPrikaz = lokacija.getAdresa() + ": " + lokacija.getGeografskaDuzina() + "-" + lokacija.getGeografskaSirina();
+        this.vremePrikaz = this.datumVreme.format(Manager.dateTimeFormat);
     }
 
     public long getId() {
@@ -52,6 +109,8 @@ public class Manifestacija {
         this.status = status;
         this.slika = slika;
         this.lokacija = lokacija;
+        this.lokacijaPrikaz = lokacija.getAdresa() + ": " + lokacija.getGeografskaDuzina() + "-" + lokacija.getGeografskaSirina();
+        this.vremePrikaz = this.datumVreme.format(Manager.dateTimeFormat);
     }
 
     public String getNaziv() {
@@ -165,17 +224,63 @@ public class Manifestacija {
         return Objects.hash(naziv, tip, datumVreme, cena, status, slika, lokacija);
     }
 
+
+    public Manifestacija(long id, String naziv, String tip, LocalDateTime datumVreme, double cena, boolean status, String slika, Lokacija lokacija, long brojMesta, int ocena, String lokacijaPrikaz, String vremePrikaz) {
+        this.id = id;
+        this.naziv = naziv;
+        this.tip = tip;
+        this.datumVreme = datumVreme;
+        this.cena = cena;
+        this.status = status;
+        this.slika = slika;
+        this.lokacija = lokacija;
+        this.brojMesta = brojMesta;
+        this.ocena = ocena;
+        this.lokacijaPrikaz = lokacijaPrikaz;
+        this.vremePrikaz = vremePrikaz;
+    }
+    public void setOcena(int ocena) {
+        this.ocena = ocena;
+    }
+    public void setLokacijaPrikaz(String lokacijaPrikaz) {
+        this.lokacijaPrikaz = lokacijaPrikaz;
+    }
+    public void setVremePrikaz(String vremePrikaz) {
+        this.vremePrikaz = vremePrikaz;
+    }
+
+    public Manifestacija ocena(int ocena) {
+        setOcena(ocena);
+        return this;
+    }
+
+    public Manifestacija lokacijaPrikaz(String lokacijaPrikaz) {
+        setLokacijaPrikaz(lokacijaPrikaz);
+        return this;
+    }
+
+    public Manifestacija vremePrikaz(String vremePrikaz) {
+        setVremePrikaz(vremePrikaz);
+        return this;
+    }
+
     @Override
     public String toString() {
         return "{" +
-            " naziv='" + getNaziv() + "'" +
+            " id='" + getId() + "'" +
+            ", naziv='" + getNaziv() + "'" +
             ", tip='" + getTip() + "'" +
             ", datumVreme='" + getDatumVreme() + "'" +
             ", cena='" + getCena() + "'" +
             ", status='" + isStatus() + "'" +
             ", slika='" + getSlika() + "'" +
             ", lokacija='" + getLokacija() + "'" +
+            ", brojMesta='" + getBrojMesta() + "'" +
+            ", ocena='" + getOcena() + "'" +
+            ", lokacijaPrikaz='" + getLokacijaPrikaz() + "'" +
+            ", vremePrikaz='" + getVremePrikaz() + "'" +
             "}";
     }
+
 
 }

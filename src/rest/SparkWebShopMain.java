@@ -92,6 +92,13 @@ public class SparkWebShopMain {
 			System.out.println(pd);
 			return true;
 		});
+
+
+		get("/rest/manifestacije/dobaviManifestacije", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(podaci.getManifestacije());
+		});
+		
 	}
 	
 	private static ShoppingCart getSc(Request req) {
