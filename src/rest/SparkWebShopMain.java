@@ -6,6 +6,7 @@ import static spark.Spark.post;
 import static spark.Spark.staticFiles;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.google.gson.Gson;
@@ -16,6 +17,7 @@ import beans.webshop.KorisnikInfo;
 import beans.webshop.Kupac;
 import beans.webshop.Manager;
 import beans.webshop.Manifestacija;
+import beans.webshop.ManifestacijaInfo;
 import beans.webshop.TipKarte;
 import beans.webshop.Uloga;
 import beans.webshop.rezervacija;
@@ -110,10 +112,14 @@ public class SparkWebShopMain {
 		post("rest/Manifestacija/sacuvajPromene", (req, res) ->{
 			res.type("application/json");
 
-			String payload = req.body();
-			Manifestacija pd = g.fromJson(payload, Manifestacija.class);
+			//String payload = req.body();
+			//ManifestacijaInfo pd = g.fromJson(payload, ManifestacijaInfo.class);
 			
-			return g.toJson(podaci.nabaviKomentareDogadjaja(pd.getId()));
+			//LocalDate d = LocalDate.parse(pd.getDatumVreme());
+			//Manifestacija m = new Manifestacija(naziv, tip, datumVreme, Double.parseDouble(pd.cena), false, slika, lokacija)
+
+
+			return g.toJson(false);
 
 		}); 
 

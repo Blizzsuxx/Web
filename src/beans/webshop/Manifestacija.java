@@ -21,6 +21,7 @@ public class Manifestacija {
     private long zauzetBrojMesta;
 
 
+    private static long ID;
 
     public long getZauzetBrojMesta() {
         return this.zauzetBrojMesta;
@@ -56,6 +57,10 @@ public class Manifestacija {
 
 
     public Manifestacija(long id, String naziv, String tip, LocalDateTime datumVreme, double cena, boolean status, String slika, Lokacija lokacija, long brojMesta, long zauzetBrojMesta) {
+        if(ID < id){
+            ID = id;
+            ID++;
+        }
         this.id = id;
         this.naziv = naziv;
         this.tip = tip;
@@ -87,11 +92,17 @@ public class Manifestacija {
 
 
     public Manifestacija() {
+        this.id = ID;
+        ID++;
     }
 
 
     public Manifestacija(long id, String naziv, String tip, LocalDateTime datumVreme, double cena, boolean status, String slika, Lokacija lokacija) {
         this.id = id;
+        if(ID < id){
+            ID = id;
+            ID++;
+        }
         this.naziv = naziv;
         this.tip = tip;
         this.datumVreme = datumVreme;
@@ -119,6 +130,7 @@ public class Manifestacija {
 
 
     public Manifestacija(String naziv, String tip, LocalDateTime datumVreme, double cena, boolean status, String slika, Lokacija lokacija) {
+        this();
         this.naziv = naziv;
         this.tip = tip;
         this.datumVreme = datumVreme;
