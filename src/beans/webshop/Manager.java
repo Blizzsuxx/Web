@@ -349,6 +349,18 @@ public class Manager {
     }
 
 
+    public ArrayList<Karta> nabaviRezervisaneKarte(){
+        ArrayList<Karta> rez = new ArrayList<>();
+
+        for (Karta k : karte){
+            if(k.getStatus()){
+                rez.add(k);
+            }
+        }
+
+        return rez;
+    }
+
     
 
     public Manager() {

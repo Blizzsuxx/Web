@@ -12,11 +12,37 @@ public class Karta {
     private String kupacPrezime;
     private boolean status;
     private TipKarte tip;
+    private String vremePrikaz;
 
     private static long ID = 10;
     public Karta() {
         this.id = ID;
         ID++;
+    }
+
+    public Karta(long id, Manifestacija manifestacija, LocalDateTime datumVreme, double cena, String kupacIme, String kupacPrezime, boolean status, TipKarte tip, String vremePrikaz) {
+        this.id = id;
+        this.manifestacija = manifestacija;
+        this.datumVreme = datumVreme;
+        this.cena = cena;
+        this.kupacIme = kupacIme;
+        this.kupacPrezime = kupacPrezime;
+        this.status = status;
+        this.tip = tip;
+        this.vremePrikaz = vremePrikaz;
+    }
+
+    public String getVremePrikaz() {
+        return this.vremePrikaz;
+    }
+
+    public void setVremePrikaz(String vremePrikaz) {
+        this.vremePrikaz = vremePrikaz;
+    }
+
+    public Karta vremePrikaz(String vremePrikaz) {
+        setVremePrikaz(vremePrikaz);
+        return this;
     }
 
     public Karta(long id, Manifestacija manifestacija, LocalDateTime datumVreme, double cena, String kupacIme, String kupacPrezime, boolean status, TipKarte tip) {
@@ -30,6 +56,7 @@ public class Karta {
         this.kupacIme = kupacIme;
         this.kupacPrezime = kupacPrezime;
         this.status = status;
+        this.vremePrikaz = this.datumVreme.format(Manager.dateTimeFormat);
         this.tip = tip;
     }
 
@@ -43,6 +70,7 @@ public class Karta {
         this.kupacIme = kupacIme;
         this.kupacPrezime = kupacPrezime;
         this.status = status;
+        this.vremePrikaz = this.datumVreme.format(Manager.dateTimeFormat);
         this.tip = tip;
     }
 

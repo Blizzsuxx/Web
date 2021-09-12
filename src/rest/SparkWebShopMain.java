@@ -20,10 +20,13 @@ import beans.webshop.ProductToAdd;
 import beans.webshop.Products;
 import beans.webshop.ShoppingCart;
 import beans.webshop.TipKarte;
+import beans.webshop.Uloga;
 import beans.webshop.rezervacija;
 import spark.Request;
 import spark.Session;
 
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.ChronoUnit.*;
 public class SparkWebShopMain {
 
 	private static Products products = new Products();
@@ -112,6 +115,19 @@ public class SparkWebShopMain {
 			return g.toJson(getKorisnik(req));
 		});
 
+
+		get("/rest/Karte/dobaviKarte", (req, res) -> {
+			res.type("application/json");
+			Korisnik k = getKorisnik(req);
+			if(k.getUloga().equals(Uloga.KUPAC)){
+				return g.toJson(((Kupac) k).getKarte());
+			} else if(k.getUloga().equals(Uloga.PRODAVAC)){
+				return g.toJson(podaci.nabaviRezervisaneKarte());
+			} else {
+				return g.toJson(podaci.getKarte());
+			}
+		});
+
 		get("/rest/manifestacije/dobaviManifestacije", (req, res) -> {
 			res.type("application/json");
 			return g.toJson(podaci.getManifestacije());
@@ -148,6 +164,8 @@ public class SparkWebShopMain {
 		}); 
 
 
+
+
 		post("/rest/karte/rezervisiKarte", (req, res) ->{
 			res.type("application/json");
 
@@ -160,7 +178,7 @@ public class SparkWebShopMain {
 			m.setZauzetBrojMesta(m.getZauzetBrojMesta() + pd.getRegularne()+ pd.getVip()+ pd.getFanParti());
 			Kupac k = (Kupac) getKorisnik(req);
 			for (int i = 0; i < pd.getRegularne(); i++){
-				Karta karta = new Karta(m, m.getDatumVreme(), m.getCena() - (m.getCena() / (100/k.getTipKupca().getPopust())), k.getIme(), k.getPrezime(), false, TipKarte.REGULAR);
+				Karta karta = new Karta(m, m.getDatumVreme(), m.getCena() - (m.getCena() / (100/k.getTipKupca().getPopust())), k.getIme(), k.getPrezime(), true, TipKarte.REGULAR);
 				Double bodovi = karta.getCena()/1000 * 133;
 				k.setBrojBodova(k.getBrojBodova()+ bodovi.intValue());
 				podaci.getKarte().add(karta);
@@ -177,6 +195,27 @@ public class SparkWebShopMain {
 				podaci.getKarte().add(karta);
 				k.setBrojBodova(k.getBrojBodova()+ bodovi.intValue());
 			}
+			return true;
+
+		}); 
+
+		post("/rest/karte/otkaziKartu", (req, res) ->{
+			res.type("application/json");
+
+			String payload = req.body();
+			rezervacija pd = g.fromJson(payload, rezervacija.class);
+			Manifestacija m = podaci.findManifestacija(pd.getId());
+			LocalDateTime now = LocalDateTime.now();
+			Karta otkKarta = podaci.findKarta(pd.getId());
+			long noOfDaysBetween = ChronoUnit.DAYS.between(now, otkKarta.getDatumVreme());
+			if (now.isAfter(otkKarta.getDatumVreme()) || noOfDaysBetween < 7  || !otkKarta.getStatus()){
+				return false;
+			}
+			otkKarta.setStatus(false);
+			m.setZauzetBrojMesta(m.getZauzetBrojMesta() - 1);
+			Kupac k = (Kupac) getKorisnik(req);
+			int a =(int) (k.getBrojBodova() - otkKarta.getCena()/1000 * 133 * 4);
+			k.setBrojBodova( a);
 			return true;
 
 		}); 
