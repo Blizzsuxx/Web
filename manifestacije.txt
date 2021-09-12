@@ -1,1 +1,2 @@
 1;baba;zurka;1989-01-12 11:22;1200.00;true;https://Ipfs.aleph.im/ipfs/QmRzxht8Qdcn8i7SHVzQwg4v9LeWumLQ4dMyhBg4rGkTfH;12.00|14.00|Baba Jage 5, Novi Sad, 21000;200
+2;vera;party;1962-01-12 11:22;1200.00;true;https://Ipfs.aleph.im/ipfs/QmRzxht8Qdcn8i7SHVzQwg4v9LeWumLQ4dMyhBg4rGkTfH;12.00|14.00|Baba Jage 5, Novi Sad, 21000;0
