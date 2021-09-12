@@ -134,7 +134,27 @@
                 });
               } else {
                 console.debug("yey")
-                window.location.href = '/korisnickiProzor.html'
+
+
+                axios.get("rest/Korisnici/dobaviTrenutnogKorisnika").then(response => {
+                this.trenutniKorisnik = response.data;
+                  if (this.trenutniKorisnik.uloga == 'KUPAC'){
+                    window.location.href = '/korisnickiProzor.html'
+
+                  } else if (this.trenutniKorisnik.uloga == 'PRODAVAC'){
+                    window.location.href = '/prodavacProzor.html'
+
+                  } else if (this.trenutniKorisnik.uloga == 'ADMINISTRATOR'){
+                    window.location.href = '/prodavacProzor.html'
+
+                  } else {
+                    console.debug("bad")
+                    window.location.href = '/korisnickiProzor.html'
+
+                  }
+                });
+
+
               }
               return 
             },

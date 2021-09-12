@@ -1,0 +1,152 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <script src="https://unpkg.com/vue@next"></script>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <link rel="stylesheet" href="./css/app.css">
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-plus"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>Element Plus demo</title>
+    <style>
+        .el-header {
+          background-color: #B3C0D1;
+          color: #333;
+          line-height: 60px;
+        }
+      
+        .el-aside {
+          color: #333;
+        }
+      </style>
+  </head>
+  <body>
+    <div id="app">
+        <el-main>
+              <el-container>
+                <el-main>
+                  <el-form ref="form" :model="form" label-width="120px">
+            
+                    <el-form-item label="Naziv">
+              <el-input v-model="form.naziv"></el-input>
+            </el-form-item>
+          
+
+          
+          <el-form-item label="Tip">
+              <el-input v-model="form.tip"></el-input>
+            </el-form-item>
+
+            <el-form-item label="Broj Mesta">
+                <el-input-number
+                v-model="form.brojMesta"
+                :min="1"
+            ></el-input-number>
+              </el-form-item>
+          
+          
+            <el-form-item label="Datum">
+              <el-col :span="11">
+                <el-date-picker type="date" placeholder="Izaberi dan" v-model="form.datumVreme" style="width: 100%;"></el-date-picker>
+              </el-col>
+            </el-form-item>
+
+            <el-form-item label="Vreme">
+                <el-col :span="11">
+                    <el-time-select
+                        v-model="form.vreme"
+                        start="00:00"
+                        step="00:15"
+                        placeholder="Select time"
+                        >
+                    </el-time-select>
+                </el-col>
+            </el-form-item>
+            
+            <el-form-item label="Cena">
+                <el-input-number
+                :precision="2"
+                v-model="form.cena"
+                :min="1"
+            ></el-input-number>
+              </el-form-item>
+            
+              <el-form-item label="Geografska sirina">
+                <el-input-number
+                :precision="2"
+                v-model="form.geografskaSirina"
+            ></el-input-number>
+              </el-form-item>
+              
+
+
+              <el-form-item label="Geografska visina">
+                <el-input-number
+                :precision="2"
+                v-model="form.geografskaVisina"
+            ></el-input-number>
+
+              </el-form-item><el-form-item label="Adresa">
+                <el-input v-model="form.adresa"></el-input>
+              </el-form-item>
+
+
+            </el-form-item><el-form-item label="Poster">
+                <el-input v-model="form.slika"></el-input>
+              </el-form-item>
+
+            <el-form-item>
+              <el-button  @click="onSubmit">Sacuvaj</el-button>
+            </el-form-item>
+          </el-form>
+                </el-main>
+              </el-container>
+            </el-main> 
+    </div>
+    <script>
+      const App = {
+ 
+    
+    methods: {
+
+       onSubmit() {
+        if(confirm("Sacuvajte promene?.")){
+        axios.post("rest/Manifestacija/sacuvajPromene", this.form).then(response => {
+            if(response.data){
+                this.$message({
+            type: 'success',
+            message: 'dodali ste manifestaciju'
+          });
+            } else {
+                this.$message({
+            type: 'error',
+            message: 'doslo je do greske'
+          });
+            }
+          return;
+      })
+
+        }
+       
+
+      },
+
+    },
+        data() {
+      return {
+        form: {
+          
+        },
+        value: null,
+      };
+     
+    }
+      };
+      const app = Vue.createApp(App);
+      app.use(ElementPlus);
+      app.mount("#app");
+    </script>
+  </body>
+</html>

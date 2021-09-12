@@ -17,12 +17,25 @@ public class Manager {
     private ArrayList<Manifestacija> manifestacije;
     private ArrayList<Karta> karte;
     private ArrayList<Komentar> komentari;
+    private ArrayList<Admin> administratori = new ArrayList<>();
     public static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     public static DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     
 
     public Korisnik login(KorisnikInfo info){
         for(Korisnik k : kupci){
+            if (k.getUsername().equals(info.username) && k.getPassword().equals(info.getPassword())){
+                return k;
+            }
+        }
+
+        for (Korisnik k : prodavci){
+            if (k.getUsername().equals(info.username) && k.getPassword().equals(info.getPassword())){
+                return k;
+            }
+        }
+
+        for (Korisnik k : administratori){
             if (k.getUsername().equals(info.username) && k.getPassword().equals(info.getPassword())){
                 return k;
             }
@@ -155,6 +168,48 @@ public class Manager {
 
     }
 
+
+
+
+
+
+
+
+    private void loadAdmini() throws IOException{
+
+
+
+        BufferedReader in = new BufferedReader(new FileReader("./admini.txt"));
+        String line, username = "", password = "", ime = "", prezime = "", datum = "", uloga = "", pol = "";
+		StringTokenizer st;
+		try {
+			while ((line = in.readLine()) != null) {
+				line = line.trim();
+				if (line.equals("") || line.indexOf('#') == 0)
+					continue;
+				st = new StringTokenizer(line, ";");
+				while (st.hasMoreTokens()) {
+					username = st.nextToken().trim();
+					password = st.nextToken().trim();
+					ime = st.nextToken().trim();
+					prezime = st.nextToken().trim();
+					pol = st.nextToken().trim();
+					datum = st.nextToken().trim();
+					uloga = st.nextToken().trim();
+				}
+				Admin a = new Admin(username, password, ime, prezime, Pol.valueOf(pol), format.parse(datum), Uloga.valueOf(uloga));
+				administratori.add(a);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+        in.close();
+
+
+
+
+    }
 
 
     private void loadKomentari() throws IOException{
@@ -333,7 +388,12 @@ public class Manager {
             e.printStackTrace();
         }
 
-        
+        try {
+            loadAdmini();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 

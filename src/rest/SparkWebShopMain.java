@@ -16,9 +16,6 @@ import beans.webshop.KorisnikInfo;
 import beans.webshop.Kupac;
 import beans.webshop.Manager;
 import beans.webshop.Manifestacija;
-import beans.webshop.ProductToAdd;
-import beans.webshop.Products;
-import beans.webshop.ShoppingCart;
 import beans.webshop.TipKarte;
 import beans.webshop.Uloga;
 import beans.webshop.rezervacija;
@@ -26,10 +23,8 @@ import spark.Request;
 import spark.Session;
 
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.ChronoUnit.*;
 public class SparkWebShopMain {
 
-	private static Products products = new Products();
 	private static Gson g = new Gson();
 	private static Manager podaci = new Manager();
 
@@ -42,39 +37,6 @@ public class SparkWebShopMain {
 		staticFiles.externalLocation(new File("./static").getCanonicalPath()); 
 
 		podaci.load();
-		get("/test", (req, res) -> {
-			return "Works";
-		});
-		
-		get("/rest/proizvodi/getJustProducts", (req, res) -> {
-			res.type("application/json");
-			return g.toJson(products.values());
-		});
-		
-		get("/rest/proizvodi/getJustSc", (req, res) -> {
-			res.type("application/json");
-			return g.toJson(getSc(req).getItems());
-		});
-		
-		get("/rest/proizvodi/getTotal", (req, res) -> {
-			res.type("application/json");
-			return g.toJson(getSc(req).getTotal());
-		});
-		
-		post("/rest/proizvodi/add", (req, res) -> {
-			res.type("application/json");
-			String payload = req.body();
-			ProductToAdd pd = g.fromJson(payload, ProductToAdd.class);
-			getSc(req).addItem(products.getProduct(pd.id), pd.count);
-			return ("OK");
-		});
-		
-		post("/rest/proizvodi/clearSc", (req, res) -> {
-			res.type("application/json");
-			getSc(req).getItems().clear();
-			return "OK";
-		});
-
 		post("/rest/korisnici/prijava", (req, res) -> {
 			res.type("application/json");
 			String payload = req.body();
@@ -134,6 +96,18 @@ public class SparkWebShopMain {
 		});
 
 		post("/rest/manifestacije/dobaviKomentare", (req, res) ->{
+			res.type("application/json");
+
+			String payload = req.body();
+			Manifestacija pd = g.fromJson(payload, Manifestacija.class);
+			
+			return g.toJson(podaci.nabaviKomentareDogadjaja(pd.getId()));
+
+		}); 
+
+
+
+		post("rest/Manifestacija/sacuvajPromene", (req, res) ->{
 			res.type("application/json");
 
 			String payload = req.body();
@@ -222,15 +196,6 @@ public class SparkWebShopMain {
 		
 	}
 	
-	private static ShoppingCart getSc(Request req) {
-		Session ss = req.session(true);
-		ShoppingCart sc = ss.attribute("sc"); 
-		if (sc == null) {
-			sc = new ShoppingCart();
-			ss.attribute("sc", sc);
-		}
-		return sc;
-	}
 
 
 	private static Korisnik getKorisnik(Request req) {
