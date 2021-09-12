@@ -1,0 +1,156 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <script src="https://unpkg.com/vue@next"></script>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <link rel="stylesheet" href="./css/app.css">
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-plus"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>Element Plus demo</title>
+    <style>
+        .el-header {
+          background-color: #B3C0D1;
+          color: #333;
+          line-height: 60px;
+        }
+      
+        .el-aside {
+          color: #333;
+        }
+      </style>
+  </head>
+  <body>
+    <div id="app">
+        <el-main>
+              <el-container>
+                <el-main>
+                  <el-button
+                            size="mini"
+                            type="info"
+                            @click="handleInfo()">Omoguci menjanje</el-button>
+                  <el-form ref="form" :model="form" label-width="120px">
+            
+                    <el-form-item label="Ime">
+              <el-input v-model="form.ime" :disabled="onemoguci"></el-input>
+            </el-form-item>
+          
+
+          
+          <el-form-item label="Prezime">
+              <el-input v-model="form.prezime" :disabled="onemoguci"></el-input>
+            </el-form-item>
+
+            <el-form-item label="Password">
+                <el-input v-model="form.password" :disabled="onemoguci"></el-input>
+              </el-form-item>
+          
+              <div v-if="trenutniKorisnik.brojBodova">
+                <el-form-item label="Broj Bodova">
+                    <el-input v-model="form.brojBodova" disabled></el-input>
+                  </el-form-item>
+              </div>
+          
+          
+            <el-form-item label="Datum rodjenja">
+              <el-col :span="11">
+                <el-date-picker type="date" placeholder="Izaberi dan" v-model="form.datumRodjenja" style="width: 100%;"></el-date-picker>
+              </el-col>
+            </el-form-item>
+            
+            
+            <el-form-item>
+              <el-button  @click="onSubmit">Sacuvaj</el-button>
+              <el-button  @click="vrati()">Nemoj sacuvati</el-button>
+            </el-form-item>
+          </el-form>
+                </el-main>
+              </el-container>
+            </el-main> 
+    </div>
+    <script>
+      const App = {
+        async mounted(){
+      //pozivanje ucitavanja podataka apoteka
+      
+        
+      axios.get("rest/Korisnici/dobaviTrenutnogKorisnika", this.form).then(response => {
+        this.trenutniKorisnik = response.data;
+
+
+        this.form.ime=this.trenutniKorisnik.ime
+        this.form.prezime=this.trenutniKorisnik.prezime
+        this.backup.ime=this.trenutniKorisnik.ime
+        this.backup.prezime=this.trenutniKorisnik.prezime
+        this.backup.datumRodjenja=this.trenutniKorisnik.datumRodjenja
+        this.form.datumRodjenja=this.trenutniKorisnik.datumRodjenja
+        this.backup.brojBodova=this.trenutniKorisnik.brojBodova
+        this.form.brojBodova=this.trenutniKorisnik.brojBodova
+        this.backup.password=this.trenutniKorisnik.password
+        this.form.password=this.trenutniKorisnik.password
+        return;
+        })
+      
+      
+
+    },
+    
+    methods: {
+      handleInfo() {
+        
+        this.onemoguci=false;},
+       onSubmit() {
+         if(this.onemoguci){confirm("Trenutno niste odabrali omogucavanje promena. Kliknite na dugme omoguci promene radi menjanja informacija.");}
+        else{
+        if(confirm("Sacuvajte promene?.")){
+        axios.post("rest/Korisnici/sacuvajPromene", this.form).then(response => {
+
+          return;
+      })
+        this.backup.ime=this.form.ime
+        this.backup.prezime=this.form.prezime
+        this.backup.datumRodjenja = this.form.datumRodjenja
+        this.backup.password = this.form.password
+        this.backup.brojBodova = this.form.brojBodova
+        }
+        }
+       
+
+      },
+       vrati() {
+        this.form.ime=this.backup.ime
+        this.form.prezime=this.backup.prezime
+        this.form.datumRodjenja = this.backup.datumRodjenja
+      }
+    },
+        data() {
+      return {
+        onemoguci: true,
+        form: {
+          ime: '' ,
+          prezime: '',
+          datumRodjenja: '',
+          
+        },
+        
+        backup: {
+          ime: '' ,
+          prezime: '',
+          datumRodjenja: '',
+          
+        },
+
+        trenutniKorisnik: {ime: '', prezime: '', sifra: "", datumRodjenja: '', brojBodova: ''},
+      
+      };
+     
+    }
+      };
+      const app = Vue.createApp(App);
+      app.use(ElementPlus);
+      app.mount("#app");
+    </script>
+  </body>
+</html>

@@ -20,6 +20,9 @@ public class Karta {
     }
 
     public Karta(long id, Manifestacija manifestacija, LocalDateTime datumVreme, double cena, String kupacIme, String kupacPrezime, boolean status, TipKarte tip) {
+        if(id >= ID){
+            ID++;
+        }
         this.id = id;
         this.manifestacija = manifestacija;
         this.datumVreme = datumVreme;
@@ -31,6 +34,9 @@ public class Karta {
     }
 
     public Karta(Manifestacija manifestacija, LocalDateTime datumVreme, double cena, String kupacIme, String kupacPrezime, boolean status, TipKarte tip) {
+        if(id >= ID){
+            ID++;
+        }
         this.manifestacija = manifestacija;
         this.datumVreme = datumVreme;
         this.cena = cena;

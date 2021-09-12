@@ -107,6 +107,10 @@ public class SparkWebShopMain {
 			return g.toJson((Kupac)getKorisnik(req));
 		});
 
+		get("/rest/Korisnici/dobaviTrenutnogKorisnika", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(getKorisnik(req));
+		});
 
 		get("/rest/manifestacije/dobaviManifestacije", (req, res) -> {
 			res.type("application/json");
@@ -120,6 +124,26 @@ public class SparkWebShopMain {
 			Manifestacija pd = g.fromJson(payload, Manifestacija.class);
 			
 			return g.toJson(podaci.nabaviKomentareDogadjaja(pd.getId()));
+
+		}); 
+
+
+		post("rest/Korisnici/sacuvajPromene", (req, res) ->{
+			res.type("application/json");
+
+			String payload = req.body();
+			KorisnikInfo pd = g.fromJson(payload, KorisnikInfo.class);
+			
+			Korisnik k = getKorisnik(req);
+			k.setIme(pd.ime);
+			k.setPrezime(pd.prezime);
+			try{
+				k.setDatumRodjenja(Manager.format.parse(pd.datumRodjenja));
+			}catch(Exception e){
+
+			}
+			k.setPassword(pd.password);
+			return true;
 
 		}); 
 
