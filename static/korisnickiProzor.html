@@ -136,7 +136,7 @@
             </el-switch>
             <el-divider direction="vertical"></el-divider>
 
-            <el-button type="primary" icon="el-icon-search" @click="pretraga()">
+            <el-button  type="primary" icon="el-icon-search" @click="pretraga()">
             </el-button>
             </el-container>
                 
@@ -187,12 +187,109 @@
               </el-main>
             </el-container>
           </el-container>
+
+
+
+          
+          <el-drawer title="Porucivanje Karata" v-model="drawer" :with-header="false">
+            <el-container>
+                <el-image
+                        :src="izabranaManifestacija.slika"
+                        fit="contain"
+                ></el-image>
+            </el-container>
+            <el-container>
+            <el-divider direction="vertical"></el-divider>
+                <el-button type="primary" disabled>Zauzet broj mesta: {{izabranaManifestacija.zauzetBrojMesta}}</el-button>
+                <el-divider direction="vertical"></el-divider>
+            
+                <el-button type="primary" disabled>Broj Mesta: {{izabranaManifestacija.brojMesta}}</el-button>
+                <el-divider direction="vertical"></el-divider>
+
+                
+            </el-container>
+            <el-container>
+                <el-divider direction="vertical"></el-divider>
+            <el-button type="primary" disabled>status {{izabranaManifestacija.status}}</el-button>
+                <el-divider direction="vertical"></el-divider>
+            </el-container>
+            
+            <el-container>
+                <el-divider direction="vertical"></el-divider>
+
+            <el-button style="width: 200;" type="primary" disabled>Regularne karte</el-button>
+            <el-divider direction="vertical"></el-divider>
+            
+            <el-input-number
+                v-model="regularne"
+                @click="updateCena()"
+                :min="0"
+            ></el-input-number>
+            </el-container>
+            <el-container>
+
+            <el-divider direction="vertical"></el-divider>
+
+            <el-button style="width: 200;" type="primary" disabled>Fan parti karta</el-button>
+            <el-divider direction="vertical"></el-divider>
+            <el-input-number
+                v-model="fanParti"
+                :min="0"
+                @click="updateCena()"
+            ></el-input-number>
+            </el-container>
+            <el-container>
+            
+            <el-divider direction="vertical"></el-divider>
+
+            <el-button style="width: 200;" type="primary" disabled>VIP karta</el-button>
+            <el-divider direction="vertical"></el-divider>
+            <el-input-number
+                v-model="vip"
+                @click="updateCena()"
+                :min="0"
+            ></el-input-number>
+        </el-container>
+            
+            <el-button @click="poruciKarte()">Kupi, cena je: {{trenutnaCena}}</el-button>
+        </el-container>
+        <el-container>
+
+            <el-divider direction="vertical"></el-divider>
+        
+        </el-container>
+
+        <el-scrollbar>
+        <div v-for="item in izabraniKomentari">
+            <el-container>
+                <el-divider direction="vertical"></el-divider>
+
+                <el-button style="width: 200;" type="success" disabled>{{item.kupac.username}}</el-button>
+                <el-divider direction="vertical"></el-divider>
+
+                <el-button style="width: 200;" type="success" disabled>{{item.ocena}}</el-button>
+                <el-divider direction="vertical"></el-divider>
+            </el-container>
+            <el-container>
+                <el-input
+                type="textarea"
+                :rows="2"
+                v-model="item.tekst"
+                disabled
+
+                >
+                </el-input>
+            </el-container>
+
+          </div>
+        </el-scrollbar>
+
+          </el-drawer>
     </div>
     <script>
       const App = {
         async created(){
       //pozivanje ucitavanja podataka poseta
-      console.log("B");
       axios.get("rest/manifestacije/dobaviManifestacije").then(response => {
           this.tableData = response.data;
           this.tableDataCopy = this.tableData;
@@ -201,6 +298,64 @@
     },
 
     methods: {
+        
+        poruciKarte(){
+
+
+            axios.get("rest/kupci/dobaviTrenutnogKupca").then(response => {
+          this.trenutniKupac = response.data;
+
+
+
+
+
+          this.$confirm('Da li ste sigurni?\r\n Cena sa popustom: ' + (this.trenutnaCena - (this.trenutnaCena / (100/this.trenutniKupac.tipKupca.popust))), 'Warning', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+            axios.post("rest/karte/rezervisiKarte", {regularne : this.regularne, fanParti : this.fanParti, vip : this.vip, id : this.izabranaManifestacija.id}).then(response => {
+
+            if(response.data){
+          this.izabranaManifestacija.zauzetBrojMesta = this.izabranaManifestacija.zauzetBrojMesta - this.regularne - this.vip - this.fanParti;
+          
+          this.$message({
+            type: 'success',
+            message: 'Rezervisali ste karte'
+          });
+        } else {
+            this.$message({
+            type: 'error',
+            message: 'Doslo je do greske'
+          });
+        }
+          return;
+      })
+
+          
+
+          
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Prekid'
+          });
+        });
+
+
+
+          return;
+      })
+
+
+
+        
+        },
+
+        updateCena(){
+            this.trenutnaCena = this.izabranaManifestacija.cena * this.regularne + this.izabranaManifestacija.cena * this.fanParti * 2 + this.izabranaManifestacija.cena * this.vip * 4;
+        },
 
       pretraga(){
         let filterNaziv = this.tableDataCopy.filter(data => !this.searchNaziv || String(data.naziv).toLowerCase().includes(this.searchNaziv.toLowerCase()));
@@ -209,14 +364,13 @@
         if (this.value1){
             let time1 = this.value1[0].getTime();
             let time2 = this.value1[1].getTime();
-            let datum = filterGrad[0].datumVreme;
-            let s = Date.parse()
-            filterGrad = filterGrad.filter(data => time1 <= Date.parse(data.date.toString()).getTime() && time2 >= Date.date.parse(data.toString()).getTime());
+            let datum = new Date();
+            filterGrad = filterGrad.filter(data => datum.setFullYear(data.datumVreme.date.year, data.datumVreme.date.month, data.datumVreme.date.day), time1 <= datum.getTime() && time2 >= datum.getTime());
         }
         filterGrad = filterGrad.filter(data => data.cena >= this.od && data.cena <= this.doo);
         filterGrad = filterGrad.filter(data => !this.izabranTip || String(data.tip).toLowerCase().includes(this.izabranTip.toLowerCase()));
         if (!this.samoNerasprodate){
-            filterGrad = filterGrad.filter(data => data.brojMesta > 0);
+            filterGrad = filterGrad.filter(data => data.zauzetBrojMesta >= data.brojMesta);
         }
         this.tableData = filterGrad;
       },
@@ -225,45 +379,17 @@
     handlePregled(index, row) {
       console.log(index, row);
       
-      this.$confirm('Zelite da zapocnete pregled?', 'Warning', {
-          confirmButtonText: 'OK',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: 'Pregled zapocet',
-          });
+      
+      this.izabranaManifestacija = row
+      axios.post("rest/manifestacije/dobaviKomentare", {id: row.id}).then(response => {
+          this.izabraniKomentari = response.data;
+          this.drawer = true;
+          return;
+      })
+      
 
-          this.getPacijent(row);
-          console.log(row);
-          this.$router.push({ name: 'APPregled', params: {pacijentID: row.pacijent.username, pregledID: row.id} });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: 'Prekid'
-          });
-        });
     },
 
-    async getPacijent(row){
-
-      await this.$store.dispatch('APPacijenti/pacijentZaPrelged', row.pacijent);
-    },
-
-        promena(value){
-            let time = 7;
-            if(value === "Mesecno"){
-                time = 30;
-            }
-            if(value === "Godisnje"){
-                time = 365;
-            }
-            
-            this.tableData = this.$store.state.APPosete.svePosete.filter((item) => {
-              
-                return time >= ((new Date(Date.parse(item.kraj))).getTime() -  (new Date(Date.parse(item.pocetak))).getTime()) / (1000 * 3600 * 24)} );
-        }
     },
         data() {
 
@@ -281,6 +407,15 @@
         searchGrad: '',
         searchLokacija: '',
         searchNaziv: '',
+        centerDialogVisible: false,
+        drawer: false,
+        regularne: 0,
+        fanParti : 0,
+        vip: 0,
+        izabranaManifestacija: null,
+        izabraniKomentari: null,
+        trenutnaCena: 0,
+        trenutniKupac: null,
             }
         }
     };

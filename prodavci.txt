@@ -1,1 +1,1 @@
-Prodavac;sifra123;ime123;prezime431;MUSKI;1999-12-21;PRODAVAC;1,2,3
+Prodavac;sifra123;ime123;prezime431;MUSKI;1999-12-21;PRODAVAC;1,2

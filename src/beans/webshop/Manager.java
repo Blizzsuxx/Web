@@ -50,6 +50,16 @@ public class Manager {
         return null;
     }
 
+
+    public Karta findKarta(Long id){
+        for (Karta k : karte){
+            if (k.getId() == id){
+                return k;
+            }
+        }
+        return null;
+    }
+
     private void loadKupci() throws IOException{
 
 
@@ -75,7 +85,14 @@ public class Manager {
 					karte = st.nextToken().trim();
 					tipKupca = st.nextToken().trim();
 				}
-				Kupac kupac = new Kupac(username, password, ime, prezime, Pol.valueOf(pol), format.parse(datum), Uloga.valueOf(uloga), Integer.parseInt(brojBodova), null, null);
+                String[] tokeni = karte.split(",");
+                ArrayList<Karta> karteLista = new ArrayList<>();
+                for(String t : tokeni){
+                    Long kartaId = Long.parseLong(t);
+                    Karta k = findKarta(kartaId);
+                    karteLista.add(k);
+                }
+				Kupac kupac = new Kupac(username, password, ime, prezime, Pol.valueOf(pol), format.parse(datum), Uloga.valueOf(uloga), Integer.parseInt(brojBodova), karteLista, new TipKupca(tipKupca));
 				kupci.add(kupac);
 			}
 		} catch (Exception ex) {
@@ -117,7 +134,14 @@ public class Manager {
 					uloga = st.nextToken().trim();
 					manifestacije = st.nextToken().trim();
 				}
-				Prodavac prodavac = new Prodavac(username, password, ime, prezime, Pol.valueOf(pol), format.parse(datum), Uloga.valueOf(uloga), null);
+                String[] tokeni = manifestacije.split(",");
+                ArrayList<Manifestacija> man = new ArrayList<>();
+                for(String t : tokeni){
+                    Long manId = Long.parseLong(t);
+                    Manifestacija k = findManifestacija(manId);
+                    man.add(k);
+                }
+				Prodavac prodavac = new Prodavac(username, password, ime, prezime, Pol.valueOf(pol), format.parse(datum), Uloga.valueOf(uloga), man);
 				prodavci.add(prodavac);
 			}
 		} catch (Exception ex) {
@@ -152,7 +176,9 @@ public class Manager {
 					tekst = st.nextToken().trim();
 					ocena = st.nextToken().trim();
 				}
-				Komentar komentar = new Komentar(null, null, tekst, Integer.parseInt(ocena));
+                Kupac k = (Kupac) findKorisnik(username);
+                Manifestacija m = findManifestacija(Long.parseLong(manifestacija));
+				Komentar komentar = new Komentar(k, m, tekst, Integer.parseInt(ocena));
 				komentari.add(komentar);
 			}
 		} catch (Exception ex) {
@@ -167,6 +193,15 @@ public class Manager {
     }
 
 
+
+    public Manifestacija findManifestacija(Long id){
+        for (Manifestacija m : manifestacije){
+            if (m.getId() == id){
+                return m;
+            }
+        }
+        return null;
+    }
 
 
     private void loadKarte() throws IOException{
@@ -192,7 +227,7 @@ public class Manager {
 					status = st.nextToken().trim();
 					tip = st.nextToken().trim();
 				}
-				Karta karta = new Karta(Long.parseLong(id), null, LocalDateTime.parse(datumVreme, dateTimeFormat), Double.parseDouble(cena), kupacIme, kupacPrezime, Boolean.parseBoolean(status), TipKarte.valueOf(tip));
+				Karta karta = new Karta(Long.parseLong(id), findManifestacija(Long.parseLong(manifestacija)), LocalDateTime.parse(datumVreme, dateTimeFormat), Double.parseDouble(cena), kupacIme, kupacPrezime, Boolean.parseBoolean(status), TipKarte.valueOf(tip));
 				karte.add(karta);
 			}
 		} catch (Exception ex) {
@@ -213,7 +248,7 @@ public class Manager {
 
 
         BufferedReader in = new BufferedReader(new FileReader("./manifestacije.txt"));
-        String line, id = "", naziv = "", tip = "", datumVreme = "", cena = "", status = "", slika = "", lokacija = "", brojMesta = "";
+        String line, id = "", naziv = "", tip = "", datumVreme = "", cena = "", status = "", slika = "", lokacija = "", brojMesta = "", zauzetaMesta="";
 		StringTokenizer st;
 		try {
 			while ((line = in.readLine()) != null) {
@@ -231,9 +266,12 @@ public class Manager {
 					slika = st.nextToken().trim();
 					lokacija = st.nextToken().trim();
 					brojMesta = st.nextToken().trim();
+                    zauzetaMesta = st.nextToken().trim();
 
 				}
-				Manifestacija manifestacija = new Manifestacija(Long.parseLong(id), naziv, tip, LocalDateTime.parse(datumVreme, dateTimeFormat), Double.parseDouble(cena), Boolean.parseBoolean(status), slika, null, Long.parseLong(brojMesta));
+                String[] tokeni = lokacija.split("\\|");
+                Lokacija lokacija2 = new Lokacija(Double.parseDouble(tokeni[0]), Double.parseDouble(tokeni[1]), tokeni[2]);
+				Manifestacija manifestacija = new Manifestacija(Long.parseLong(id), naziv, tip, LocalDateTime.parse(datumVreme, dateTimeFormat), Double.parseDouble(cena), Boolean.parseBoolean(status), slika, lokacija2, Long.parseLong(brojMesta), Long.parseLong(zauzetaMesta));
 				manifestacije.add(manifestacija);
 			}
 		} catch (Exception ex) {
@@ -252,6 +290,22 @@ public class Manager {
 
     public void load(){
         
+
+
+        try {
+            loadManifestacije();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            loadKarte();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         try {
             loadKupci();
         } catch (FileNotFoundException e) {
@@ -269,12 +323,7 @@ public class Manager {
             e.printStackTrace();
         }
 
-        try {
-            loadKarte();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+
 
 
         try {
@@ -284,14 +333,21 @@ public class Manager {
             e.printStackTrace();
         }
 
-        try {
-            loadManifestacije();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        
 
     }
+
+
+    public ArrayList<Komentar> nabaviKomentareDogadjaja(long id){
+        ArrayList<Komentar> koms = new ArrayList<>();
+        for (Komentar k : komentari){
+            if (k.getManifestacija().getId() == id){
+                koms.add(k);
+            }
+        }
+        return koms;
+    }
+
 
     
 

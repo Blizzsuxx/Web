@@ -13,12 +13,24 @@ public class Karta {
     private boolean status;
     private TipKarte tip;
 
-
+    private static long ID = 10;
     public Karta() {
+        this.id = ID;
+        ID++;
     }
 
     public Karta(long id, Manifestacija manifestacija, LocalDateTime datumVreme, double cena, String kupacIme, String kupacPrezime, boolean status, TipKarte tip) {
         this.id = id;
+        this.manifestacija = manifestacija;
+        this.datumVreme = datumVreme;
+        this.cena = cena;
+        this.kupacIme = kupacIme;
+        this.kupacPrezime = kupacPrezime;
+        this.status = status;
+        this.tip = tip;
+    }
+
+    public Karta(Manifestacija manifestacija, LocalDateTime datumVreme, double cena, String kupacIme, String kupacPrezime, boolean status, TipKarte tip) {
         this.manifestacija = manifestacija;
         this.datumVreme = datumVreme;
         this.cena = cena;

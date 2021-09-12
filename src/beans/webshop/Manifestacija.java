@@ -17,7 +17,23 @@ public class Manifestacija {
     private int ocena;
     private String lokacijaPrikaz;
     private String vremePrikaz;
+    
+    private long zauzetBrojMesta;
 
+
+
+    public long getZauzetBrojMesta() {
+        return this.zauzetBrojMesta;
+    }
+
+    public void setZauzetBrojMesta(long zauzetBrojMesta) {
+        this.zauzetBrojMesta = zauzetBrojMesta;
+    }
+
+    public Manifestacija zauzetBrojMesta(long zauzetBrojMesta) {
+        setZauzetBrojMesta(zauzetBrojMesta);
+        return this;
+    }
 
 
     public int getOcena() {
@@ -39,7 +55,7 @@ public class Manifestacija {
 
 
 
-    public Manifestacija(long id, String naziv, String tip, LocalDateTime datumVreme, double cena, boolean status, String slika, Lokacija lokacija, long brojMesta) {
+    public Manifestacija(long id, String naziv, String tip, LocalDateTime datumVreme, double cena, boolean status, String slika, Lokacija lokacija, long brojMesta, long zauzetBrojMesta) {
         this.id = id;
         this.naziv = naziv;
         this.tip = tip;
@@ -49,8 +65,9 @@ public class Manifestacija {
         this.slika = slika;
         this.lokacija = lokacija;
         this.brojMesta = brojMesta;
+        this.zauzetBrojMesta = zauzetBrojMesta;
         if(lokacija != null){
-            this.lokacijaPrikaz = lokacija.getAdresa() + ": " + lokacija.getGeografskaDuzina() + "-" + lokacija.getGeografskaSirina();
+            this.lokacijaPrikaz = lokacija.getAdresa() + ": \r\n" + lokacija.getGeografskaDuzina() + "-" + lokacija.getGeografskaSirina();
         }
         this.vremePrikaz = this.datumVreme.format(Manager.dateTimeFormat);
     }

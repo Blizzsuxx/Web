@@ -10,7 +10,14 @@ public class TipKupca {
     
     
 
-    public TipKupca() {
+    public TipKupca(String imeTipa) {
+        if(imeTipa.equals("Zlatni")){
+            popust = 10;
+        } else if (imeTipa.equals("Srebrni")){
+            popust = 5;
+        } else {
+            popust = 1;
+        }
     }
 
     public TipKupca(String imeTipa, int popust, int potrebniBodovi) {

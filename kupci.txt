@@ -1,1 +1,1 @@
-Kupac;sifra123;ime;prezime;MUSKI;1999-11-21;KUPAC;12;13,12,1;Zlatni
+Kupac;sifra123;ime;prezime;MUSKI;1999-11-21;KUPAC;12;2,1;Zlatni
